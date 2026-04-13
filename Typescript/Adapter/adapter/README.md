@@ -1,46 +1,94 @@
-# Getting Started with Create React App
+# Adapter Design Pattern - React Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project implements the **Adapter Design Pattern** to manage data sources in a React application. It demonstrates how to decouple UI components from specific data fetching logic.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📖 Description
+The **Adapter Pattern** is a structural design pattern that allows objects with incompatible interfaces to work together. It acts as a wrapper that catches calls for one object and transforms them into a format and interface readable by the second object.
 
-### `npm start`
+In this application, we use it to abstract the communication with our logging service, providing a unified interface for both local simulation and remote API calls.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🛠️ Problem Solved
+Our frontend needs to fetch and send logs. However, the backend (Django API) might not be available during frontend development, or we might want to switch between different logging services in the future.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Without the Adapter pattern, changing the data source would require modifying the `LogDashboard` component directly. With this pattern, the component only knows about the `IDataProvider` interface, making it **agnostic** to where the data comes from.
 
-### `npm test`
+## ✅ When to use it
+- When you want to decouple your application from a third-party library or an unstable API.
+- When you need to support multiple data sources through a common interface.
+- When you want to provide a **Mock** mode for development and testing without changing production logic.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## ❌ When NOT to use it
+- If your application is very simple and will always use a single, stable data source.
+- If introducing an abstraction layer adds more complexity than the flexibility it provides.
 
-### `npm run build`
+## 💻 Implementation (TypeScript)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. The Interface
+Every adapter must implement the `IDataProvider` contract:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```typescript
+export interface LogEntry {
+  id: number;
+  message: string;
+  level: 'info' | 'error';
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export interface IDataProvider {
+  getLogs(): Promise<LogEntry[]>;
+  postLog(message: string, useExternal: boolean): Promise<{ status: string; adapter: string }>;
+}
+```
 
-### `npm run eject`
+### 2. Concrete Adapters
+We have two implementations that the application can switch between at runtime:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+#### MockDataAdapter
+Used for local development. It stores logs in memory and simulates network delays.
+```typescript
+export class MockDataAdapter implements IDataProvider {
+  private logs: LogEntry[] = [...];
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  async getLogs(): Promise<LogEntry[]> {
+    // Returns local in-memory logs
+  }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  async postLog(message: string, useExternal: boolean): Promise<any> {
+    // Appends log to local array
+  }
+}
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### ApiDataAdapter
+Used for production. It uses the `fetch` API to communicate with a Django REST backend.
+```typescript
+export class ApiDataAdapter implements IDataProvider {
+  private baseUrl = 'http://localhost:8000/api';
 
-## Learn More
+  async getLogs(): Promise<LogEntry[]> {
+    const response = await fetch(`${this.baseUrl}/logs/`);
+    return response.json();
+  }
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🚀 Proposed Use Case
+The `LogDashboard` component allows users to toggle between the **Mock** and **API** providers. This proves that the UI logic remains identical regardless of the data source selected, demonstrating perfect decoupling.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🏃 Execution Example
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Run the Application
+```bash
+npm start
+```
+
+### 3. Test the Pattern
+1. Open the application at [http://localhost:3000](http://localhost:3000).
+2. Check/Uncheck the **"Use Django API"** box.
+3. Notice how the "Logs List" updates using different adapters without refreshing the page or changing the UI code.
