@@ -12,6 +12,6 @@ class CoffeeOrderSerializer(serializers.ModelSerializer):
         model = CoffeeOrder
         fields = ['id', 'description', 'total_cost', 'extras', 'created_at']
         read_only_fields = ['id', 'description', 'total_cost', 'created_at']
-
     def create(self, validated_data):
+        validated_data.pop('extras', None) 
         return super().create(validated_data)

@@ -2,4 +2,5 @@ from django.apps import AppConfig
 
 
 class CoffeeOrderConfig(AppConfig):
-    name = "coffee_order"
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = "apps.coffee_order"
