@@ -1,0 +1,23 @@
+:root {
+  --cp-blue: #467fa1;
+  --cp-purple: #54295c;
+  --cp-dark-blue: #061f2b;
+  --cp-dark-purple: #1e0f1d;
+  --cp-red: #5e0b0b;
+  --cp-text: #e0e0e0;
+  --cp-glow: rgba(70, 127, 161, 0.4);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--cp-dark-blue);
+  color: var(--cp-text);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
