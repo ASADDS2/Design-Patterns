@@ -1,46 +1,79 @@
-# Getting Started with Create React App
+# Patrón de Diseño: Decorator (Decorador)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descripción del Patrón
+El patrón **Decorator** es un patrón de diseño estructural que permite añadir funcionalidades a objetos de manera dinámica, envolviéndolos en objetos "decoradores". Proporciona una alternativa flexible a la herencia para extender la funcionalidad de una clase.
 
-## Available Scripts
+## Problema que Resuelve
+Evita la creación de un número excesivo de subclases para cubrir todas las combinaciones posibles de extensiones. Permite añadir responsabilidades a objetos individuales en lugar de a toda la clase.
 
-In the project directory, you can run:
+## Cuándo Usarlo
+- Cuando necesites añadir responsabilidades a objetos individuales de forma dinámica y transparente.
+- Cuando la extensión mediante herencia sea imposible o ineficiente.
+- Cuando quieras que el objeto original no tenga conocimiento del decorador.
 
-### `npm start`
+## Cuándo NO Usarlo
+- Si el sistema tiene decoradores que dependen de otros decoradores (orden específico muy rígido).
+- Si el código resultante se vuelve demasiado complejo de seguir debido a muchas capas de envoltura.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Implementación en Python (Backend)
+El backend implementa una estructura de clases donde cada decorador mantiene una referencia al objeto decorado y delega las llamadas.
 
-### `npm test`
+```python
+# Ubicación: apps/coffee_order/services/decorators.py
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+class CoffeeDecorator(Coffee):
+    def __init__(self, coffee: Coffee):
+        self._decorated_coffee = coffee
 
-### `npm run build`
+    def get_cost(self):
+        return self._decorated_coffee.get_cost()
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Implementación en JavaScript / TypeScript (Frontend)
+El frontend utiliza TypeScript para asegurar que todos los decoradores cumplan con la interfaz `Coffee`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```typescript
+// Ubicación: src/lib/patterns/CoffeeDecorator.ts
 
-### `npm run eject`
+export abstract class CoffeeDecorator implements Coffee {
+  protected decoratedCoffee: Coffee;
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  constructor(coffee: Coffee) {
+    this.decoratedCoffee = coffee;
+  }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  getCost(): number {
+    return this.decoratedCoffee.getCost();
+  }
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Caso de Uso Propuesto: Coffee Shop Order System
+Un sistema de pedidos donde un café base puede ser "decorado" con Leche, Azúcar, o Vainilla. Cada decoración incrementa el precio y actualiza la descripción del pedido.
 
-## Learn More
+## Ejemplo de Ejecución
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Frontend (TypeScript)
+```typescript
+const basicCoffee = new SimpleCoffee();
+const milkCoffee = new MilkDecorator(basicCoffee);
+const vanillaMilkCoffee = new VanillaDecorator(milkCoffee);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+console.log(vanillaMilkCoffee.getCost()); // 3.20
+console.log(vanillaMilkCoffee.getDescription()); // Café Simple, Leche, Vainilla
+```
+
+### Backend (Python)
+```python
+order = SimpleCoffee()
+order = MilkDecorator(order)
+order = SugarDecorator(order)
+
+print(f"Total: ${order.get_cost()}") # Total: $2.70
+```
