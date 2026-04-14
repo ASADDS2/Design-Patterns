@@ -1,46 +1,82 @@
-# Getting Started with Create React App
+# Patrón de Diseño: Builder (Constructor)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descripción del Patrón
+El patrón **Builder** es un patrón de diseño creacional que permite construir objetos complejos paso a paso. Este patrón separa la construcción de un objeto complejo de su representación, de modo que el mismo proceso de construcción pueda crear diferentes representaciones.
 
-## Available Scripts
+## Problema que Resuelve
+Cuando un objeto requiere muchos parámetros en su constructor (especialmente si muchos son opcionales o tienen valores por defecto), el código se vuelve difícil de leer y propenso a errores. Builder resuelve esto permitiendo una construcción granular y legible.
 
-In the project directory, you can run:
+## Cuándo Usarlo
+- Cuando la creación de un objeto implica muchos pasos y componentes opcionales.
+- Cuando se desea que el mismo proceso de construcción pueda crear diferentes tipos y representaciones de un objeto.
+- Para evitar constructores gigantes con muchos parámetros.
 
-### `npm start`
+## Cuándo NO Usarlo
+- Si el objeto es simple y tiene pocos parámetros.
+- Si la construcción del objeto no requiere pasos secuenciales o variaciones significativas.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Implementación en Python (Backend)
+En el backend, utilizamos una estructura clásica con una interfaz abstracta y un Director.
 
-### `npm test`
+```python
+# Ubicación: apps/pc_builder/services/builder_manager.py
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+class IComputerBuilder(ABC):
+    @abstractmethod
+    def build_cpu(self, model): pass
 
-### `npm run build`
+class GamingBuilder(IComputerBuilder):
+    def build_cpu(self, model):
+        self._pc['cpu'] = f"Gaming Pro {model}"
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Implementación en JavaScript / TypeScript (Frontend)
+En el frontend, la clase `PCBuilder` utiliza una interfaz fluida para facilitar la configuración paso a paso en el Wizard.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```typescript
+// Ubicación: src/lib/patterns/pcBuilder.ts
 
-### `npm run eject`
+export class PCBuilder {
+  private pc: Partial<IPC> = {};
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+  setCPU(cpu: string): this {
+    this.pc.cpu = cpu;
+    return this;
+  }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  build(): IPC {
+    const result = { ...this.pc } as IPC;
+    this.reset();
+    return result;
+  }
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Caso de Uso Propuesto: PC Custom Configurator
+El sistema guía al usuario a través de una serie de pasos (Nombre, CPU, GPU, RAM, Disco) para armar su equipo ideal. Cada selección del usuario llama a un método del Builder.
 
-## Learn More
+## Ejemplo de Ejecución
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Frontend (TypeScript)
+```typescript
+const builder = new PCBuilder();
+const myPc = builder
+    .setName("Workstation 2024")
+    .setCPU("Intel i7")
+    .setRAM("32GB")
+    .build();
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Backend (Python)
+```python
+builder = OfficeBuilder()
+director = PCManager(builder)
+pc_office = director.construct_budget_office()
+# Resultado: {'name': 'Office Entry', 'cpu': 'Efficient i3', ...}
+```

@@ -36,21 +36,21 @@ export const PaymentUIFactory = {
           title: 'Tarjeta de Crédito',
           description: 'Pago seguro vía pasarela Stripe',
           icon: <CreditCardIcon />,
-          color: '#dc2b2b' // Rojo de la paleta Cyberpunk
+          color: '#dc2b2b'
         };
       case 'paypal':
         return {
           title: 'PayPal',
           description: 'Transferencia instantánea con tu cuenta',
           icon: <PayPalIcon />,
-          color: '#156085' // Azul claro de la paleta
+          color: '#156085' 
         };
       case 'bank_transfer':
         return {
           title: 'Transferencia Bancaria',
           description: 'Depósito manual con instrucciones',
           icon: <BankIcon />,
-          color: '#10436c' // Azul oscuro de la paleta
+          color: '#10436c' 
         };
       default:
         throw new Error(`Método '${method}' no existe en la Factory.`);
