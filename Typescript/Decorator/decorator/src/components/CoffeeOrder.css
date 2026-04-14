@@ -1,0 +1,117 @@
+.cp-container {
+  padding: 40px;
+  background-color: var(--cp-dark-purple);
+  border: 2px solid var(--cp-blue);
+  box-shadow: 0 0 15px var(--cp-glow);
+  border-radius: 4px;
+  text-align: left;
+}
+
+.cp-title {
+  color: var(--cp-blue);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  border-bottom: 1px solid var(--cp-blue);
+  padding-bottom: 10px;
+  margin-top: 0;
+}
+
+.cp-button-group {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.cp-button {
+  background: transparent;
+  border: 1px solid var(--cp-purple);
+  color: var(--cp-purple);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.cp-button:hover {
+  background: var(--cp-purple);
+  color: white;
+  box-shadow: 0 0 10px var(--cp-purple);
+}
+
+.cp-button.active {
+  border-color: var(--cp-red);
+  color: var(--cp-red);
+}
+
+.cp-button.active:hover {
+  background: var(--cp-red);
+  color: white;
+  box-shadow: 0 0 10px var(--cp-red);
+}
+
+.cp-order-card {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(6, 31, 43, 0.8);
+  border-left: 4px solid var(--cp-red);
+}
+
+.cp-subtitle {
+  color: var(--cp-red);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+.cp-detail span {
+  font-size: 0.7rem;
+  color: var(--cp-blue);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.cp-detail p {
+  margin: 0 0 15px 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.cp-price {
+  font-size: 2rem !important;
+  color: var(--cp-text) !important;
+  margin: 5px 0 !important;
+  text-shadow: 0 0 5px var(--cp-text);
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
+.save-btn {
+  margin-top: 25px;
+  width: 100%;
+  background: var(--cp-blue);
+  border: 1px solid white;
+  color: white;
+  padding: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: white;
+  color: var(--cp-dark-blue);
+  box-shadow: 0 0 25px var(--cp-blue);
+  transform: translateY(-2px);
+}
+
+.save-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.save-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.2);
+}
